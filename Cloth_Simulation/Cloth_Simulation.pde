@@ -9,6 +9,16 @@
 
 Camera camera;
 
+float gravity = 9.81;
+float radius = 10;
+float stringTop = 50;
+float restLength = 40;
+float mass = 30;
+float k = 20;
+float kv = 10;
+
+ArrayList<Vec3> clothVertexPositions = new ArrayList<Vec3>();
+ArrayList<Vec3> clothVelocities = new ArrayList<Vec3>();
 
 
 /*
