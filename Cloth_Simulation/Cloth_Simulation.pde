@@ -16,6 +16,7 @@ Camera camera;
 */
 void setup()
 {
+  camera = new Camera();
 }
 
 
@@ -25,6 +26,8 @@ void setup()
 */
 void draw()
 {
+  background(255);
+  camera.Update(1.0 / frameRate);
 }
 
 
