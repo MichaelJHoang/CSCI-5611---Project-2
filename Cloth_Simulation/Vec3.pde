@@ -2,6 +2,12 @@
 
 //Instructions: Add 3D versions of all of the 2D vector functions
 //              Vec3 must also support the cross product.
+
+/*
+  Code from hw1
+*/
+
+
 public class Vec3 {
   public float x, y, z;
   

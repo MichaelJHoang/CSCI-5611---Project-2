@@ -4,6 +4,15 @@
 // Arrow keys rotate the camera's orientation
 // Holding shift boosts the move speed
 
+/*
+
+  Code taken from the example code in course's Canvas site. We don't take any authorship
+  in this code.
+  
+  - Jon-Michael Hoang
+
+*/
+
 class Camera
 {
   Camera()
