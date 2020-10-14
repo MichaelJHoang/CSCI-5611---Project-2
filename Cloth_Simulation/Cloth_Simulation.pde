@@ -16,6 +16,7 @@ Camera camera;
 */
 void setup()
 {
+  size (1024, 720, P3D);
   camera = new Camera();
 }
 
