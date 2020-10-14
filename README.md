@@ -1,5 +1,5 @@
 # CSCI 5611 - Project 2: Physically-Based Animation with PDEs
-### Jeffrey Jia | UMN ID and Jon-Michael Hoang | hoang339
+### Jeffrey Jia | jiaxx215 and Jon-Michael Hoang | hoang339
 
 ## Controls
 
@@ -23,5 +23,3 @@
 
 ## Art contest submission
 [Art Submission Link](https://imgur.com/)
-
-
