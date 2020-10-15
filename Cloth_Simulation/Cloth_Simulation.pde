@@ -34,6 +34,7 @@ int numVertices = clothLength * clothHeight;
 
 ArrayList <Vertex> clothVertices = new ArrayList <Vertex> ();
 
+int selected = -1;
 /*
   the int main() of Processing
 */
@@ -97,10 +98,6 @@ void draw()
 
   for (int stringColumn = 1; stringColumn < clothLength; stringColumn++){
     pushMatrix();
-    //line(clothVertices.get(stringColumn*clothHeight).position.x,clothVertices.get(stringColumn*clothHeight).position.y,
-    //     clothVertices.get((stringColumn-1)*clothHeight).position.x,clothVertices.get((stringColumn-1)*clothHeight).position.y);
-    //line(clothVertices.get(stringColumn*clothHeight).position.x,clothVertices.get(stringColumn*clothHeight).position.y,
-    //     clothVertices.get((stringColumn-1)*clothHeight+1).position.x,clothVertices.get((stringColumn-1)*clothHeight+1).position.y);
     translate(clothVertices.get(clothHeight*stringColumn).position.x,clothVertices.get(clothHeight*stringColumn).position.y);
     sphere(radius);
     popMatrix();
@@ -181,6 +178,7 @@ void update(float dt)
       
     }
     
+    //Simplified friction (Coulomb model)
     for (int i = clothHeight*stringColumn; i < clothHeight*stringColumn + clothHeight; i++){
       Vec3 fauxfriction = clothVertices.get(i).velocity.times(frictionConstant);
       clothVertices.get(i).acceleration.add(fauxfriction);
@@ -240,4 +238,23 @@ void keyPressed()
 void keyReleased()
 {
   //camera.HandleKeyPressed();
+}
+
+void mousePressed(){
+  Vec3 mousePos = new Vec3(mouseX, mouseY,0);
+  for (int i = 1; i < numVertices; i++){
+    if (mousePos.distanceTo(clothVertices.get(i).position) < radius){
+      selected = i;
+    }
+  }
+}
+
+void mouseDragged(){
+  if (selected > 0){
+    clothVertices.get(selected).position = new Vec3(mouseX, mouseY,0);
+  }
+}
+
+void mouseReleased(){
+  selected = -1;
 }
