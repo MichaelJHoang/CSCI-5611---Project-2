@@ -9,23 +9,25 @@
 
 Camera camera;
 
-Vec3 gravity = new Vec3 (0, 10, 0);
+Vec3 gravity = new Vec3 (0, 400, 0);
 float radius = 5;
 
 // starting position
-Vec3 stringTop = new Vec3(200, 100, 0);
+Vec3 stringTop = new Vec3(200, 50, 0);
 //Vec3 restLength = new Vec3(0, 40, 0);
-float restLength = 40;
+float restLength = 10;
 
-float mass = 1;
+float mass = 0.3;
 
 // tuning parameters
-float k = 20;
-float kv = 1;
+float k = 40;
+float kv = 2;
 
-float frictionConstant = -0.5;
+float frictionConstant = -0.8;
 
-int stringSize = 10;
+int clothLength = 9;
+int clothHeight = 9;
+int numVertices = clothLength * clothHeight;
 // row(column)
 //ArrayList<ArrayList<Vec3>> clothVertexPositions = new ArrayList<ArrayList<Vec3>>();
 //ArrayList<ArrayList<Vec3>> clothVelocities = new ArrayList<ArrayList<Vec3>>();
@@ -35,19 +37,23 @@ ArrayList <Vertex> clothVertices = new ArrayList <Vertex> ();
 /*
   the int main() of Processing
 */
+String windowTitle = "Swinging Rope";
 void setup()
 {
   size (1024, 720, P3D);
+  surface.setTitle(windowTitle);
   //camera = new Camera();
   
   // populate clothVertices with vertices with initial positions and velocities
-  for (int i = 0; i < stringSize; i++)
-  {
-    Vec3 tempPosition = new Vec3(stringTop.x + i + 10, stringTop.y + i * 50, 0);
-    Vec3 tempVelocity = new Vec3(0, 0, 0);
-    Vertex tempVertex = new Vertex(tempPosition, tempVelocity, new Vec3(), new Vec3(), new Vec3(), new Vec3());
-    clothVertices.add(tempVertex);
-  }
+  
+  for (int i = 0; i < clothLength; i++)
+    for (int j = 0; j < clothHeight; j++)
+    {
+      Vec3 tempPosition = new Vec3(stringTop.x + i * 30 + j * 10, stringTop.y + j * 50, 0);
+      Vec3 tempVelocity = new Vec3(0, 0, 0);
+      Vertex tempVertex = new Vertex(tempPosition, tempVelocity, new Vec3(), new Vec3(), new Vec3(), new Vec3());
+      clothVertices.add(tempVertex);
+    }
 }
   
   // position
@@ -61,22 +67,71 @@ void setup()
 /*
   function to draw based on the simulation code
 */
+boolean paused = true;
 void draw()
 {
   background(255, 255, 255);
   //camera.Update(1.0 / frameRate);
   
-  update(.1);
+  //update(.1);
+  if (!paused) {
+    for (int f = 0; f < 20; f++){
+      update(1/(20*frameRate));
+    }
+  }
   
   fill(0, 0, 255);
   
-  for (int i = 0; i < clothVertices.size()-1; i++){
+  // First String
+  pushMatrix();
+  translate(clothVertices.get(clothHeight*0).position.x,clothVertices.get(clothHeight*0).position.y);
+  sphere(radius);
+  popMatrix();
+  for (int i = clothHeight*0; i < clothHeight*0 + clothHeight - 1; i++){
     pushMatrix();
     line(clothVertices.get(i).position.x,clothVertices.get(i).position.y,clothVertices.get(i+1).position.x,clothVertices.get(i+1).position.y);
     translate(clothVertices.get(i+1).position.x,clothVertices.get(i+1).position.y);
     sphere(radius);
     popMatrix();
   }
+
+  for (int stringColumn = 1; stringColumn < clothLength; stringColumn++){
+    pushMatrix();
+    //line(clothVertices.get(stringColumn*clothHeight).position.x,clothVertices.get(stringColumn*clothHeight).position.y,
+    //     clothVertices.get((stringColumn-1)*clothHeight).position.x,clothVertices.get((stringColumn-1)*clothHeight).position.y);
+    //line(clothVertices.get(stringColumn*clothHeight).position.x,clothVertices.get(stringColumn*clothHeight).position.y,
+    //     clothVertices.get((stringColumn-1)*clothHeight+1).position.x,clothVertices.get((stringColumn-1)*clothHeight+1).position.y);
+    translate(clothVertices.get(clothHeight*stringColumn).position.x,clothVertices.get(clothHeight*stringColumn).position.y);
+    sphere(radius);
+    popMatrix();
+    for (int i = clothHeight*stringColumn; i < clothHeight*stringColumn + clothHeight - 1; i++){
+      pushMatrix();
+      line(clothVertices.get(i).position.x,clothVertices.get(i).position.y,
+           clothVertices.get(i+1).position.x,clothVertices.get(i+1).position.y);
+      line(clothVertices.get(i).position.x,clothVertices.get(i).position.y,
+           clothVertices.get(i - clothHeight).position.x,clothVertices.get(i - clothHeight).position.y);
+      line(clothVertices.get(i).position.x,clothVertices.get(i).position.y,
+           clothVertices.get(i+1 - clothHeight).position.x,clothVertices.get(i+1 - clothHeight).position.y);
+      if(i != clothHeight*stringColumn){
+        line(clothVertices.get(i).position.x,clothVertices.get(i).position.y,
+           clothVertices.get(i-1 - clothHeight).position.x,clothVertices.get(i-1 - clothHeight).position.y);
+      }
+      translate(clothVertices.get(i+1).position.x,clothVertices.get(i+1).position.y);
+      sphere(radius);
+      popMatrix();
+    }
+    pushMatrix();
+    line(clothVertices.get(clothHeight*stringColumn + clothHeight - 1).position.x,clothVertices.get(clothHeight*stringColumn + clothHeight - 1).position.y,
+         clothVertices.get(clothHeight*stringColumn - 1).position.x,clothVertices.get(clothHeight*stringColumn - 1).position.y);
+    line(clothVertices.get(clothHeight*stringColumn + clothHeight - 1).position.x,clothVertices.get(clothHeight*stringColumn + clothHeight - 1).position.y,
+         clothVertices.get(clothHeight*stringColumn - 2).position.x,clothVertices.get(clothHeight*stringColumn - 2).position.y);
+    popMatrix();
+    
+  }
+  if (paused)
+    surface.setTitle(windowTitle + " [PAUSED]");
+  else
+    surface.setTitle(windowTitle + " "+ nf(frameRate,0,2) + "FPS");
   //pushMatrix();
   //line(200, stringTop.y, 200, clothVertices.get(0).position.y);
   //translate(200, clothVertices.get(0).position.y);
@@ -102,40 +157,44 @@ void draw()
   update function to handle simulation code?
 */
 void update(float dt)
-{
-  //Reset accelerations each timestep (momenum only applies to velocity)
-  for (int i = 0; i < clothVertices.size(); i++){
-    clothVertices.get(i).acceleration = new Vec3(0,0,0);
-    clothVertices.get(i).acceleration.add(gravity);
-  }
-  
-  //Compute (damped) Hooke's law for each spring
-  for (int i = 0; i < clothVertices.size()-1; i++){
-    Vec3 diff = clothVertices.get(i+1).position.minus(clothVertices.get(i).position);
-    float stringF = -k*(diff.length() - restLength);
-    //println(stringF,diff.length(),restLen);
+{ 
+  for (int stringColumn = 0; stringColumn < clothLength; stringColumn++){
+    //Reset accelerations each timestep (momenum only applies to velocity)
+    for (int i = clothHeight*stringColumn; i < clothHeight*stringColumn + clothHeight; i++){
+      clothVertices.get(i).acceleration = new Vec3(0,0,0);
+      clothVertices.get(i).acceleration.add(gravity);
+    }
     
-    Vec3 stringDir = diff.normalized();
-    float projVbot = dot(clothVertices.get(i).velocity, stringDir);
-    float projVtop = dot(clothVertices.get(i+1).velocity, stringDir);
-    float dampF = -kv*(projVtop - projVbot);
+    //Compute (damped) Hooke's law for each spring
+    for (int i = clothHeight*stringColumn; i < clothHeight*stringColumn + clothHeight - 1; i++){
+      Vec3 diff = clothVertices.get(i+1).position.minus(clothVertices.get(i).position);
+      float stringF = -k*(diff.length() - restLength);
+      
+      Vec3 stringDir = diff.normalized();
+      float projVbot = dot(clothVertices.get(i).velocity, stringDir);
+      float projVtop = dot(clothVertices.get(i+1).velocity, stringDir);
+      float dampF = -kv*(projVtop - projVbot);
+      
+      Vec3 force = stringDir.times(stringF+dampF);
+      clothVertices.get(i).acceleration.add(force.times(-1.0/mass));
+      clothVertices.get(i+1).acceleration.add(force.times(1.0/mass));
+      
+    }
     
-    Vec3 force = stringDir.times(stringF+dampF);
-    clothVertices.get(i).acceleration.add(force.times(-1.0/mass));
-    clothVertices.get(i+1).acceleration.add(force.times(1.0/mass));
+    for (int i = clothHeight*stringColumn; i < clothHeight*stringColumn + clothHeight; i++){
+      Vec3 fauxfriction = clothVertices.get(i).velocity.times(frictionConstant);
+      clothVertices.get(i).acceleration.add(fauxfriction);
+    }
     
+    //Eulerian integration
+    for (int i = clothHeight*stringColumn + 1; i < clothHeight*stringColumn + clothHeight; i++){
+      clothVertices.get(i).velocity.add(clothVertices.get(i).acceleration.times(dt));
+      clothVertices.get(i).position.add(clothVertices.get(i).velocity.times(dt));
+    }
   }
-  
-  for (int i = 0; i < clothVertices.size(); i++){
-    Vec3 fauxfriction = clothVertices.get(i).velocity.times(frictionConstant);
-    clothVertices.get(i).acceleration.add(fauxfriction);
-  }
-  
-  //Eulerian integration
-  for (int i = 1; i < clothVertices.size(); i++){
-    clothVertices.get(i).velocity.add(clothVertices.get(i).acceleration.times(dt));
-    clothVertices.get(i).position.add(clothVertices.get(i).velocity.times(dt));
-  }
+ 
+ 
+ 
  
   //// first, second, and third
   //clothVertices.get(0).stringForce = (( clothVertices.get(0).position.minus(stringTop).minus(restLength))).times(-k);
@@ -170,8 +229,11 @@ void update(float dt)
 /*
   callback functions to handle user keyboard inputs
 */
+
 void keyPressed()
 {
+  if (key == ' ')
+    paused = !paused;
   //camera.HandleKeyPressed();
 }
 
