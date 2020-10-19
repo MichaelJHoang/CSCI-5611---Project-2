@@ -42,7 +42,7 @@ int selected = -1;
 //Sphere to interact with cloth
 float sphereRadius = 100;
 Vec3 spherePos = new Vec3(512, 360, 200);
-float sphereSpeed = 100;
+float sphereSpeed = 300;
 Vec3 sphereVel = new Vec3(0,0,0);
 float COR = 0.7; 
 
@@ -54,7 +54,10 @@ void setup()
 {
   size (1024, 720, P3D);
   surface.setTitle(windowTitle);
-  //camera = new Camera();
+  
+  
+  camera = new Camera();
+  
   
   // populate clothVertices with vertices with initial positions and velocities
   
@@ -85,7 +88,7 @@ boolean paused = true;
 void draw()
 {
   background(255, 255, 255);
-  //camera.Update(1.0 / frameRate);
+  camera.Update(1.0 / 20 * frameRate);
   
   //update(.1);
   if (!paused) {
@@ -154,7 +157,7 @@ void draw()
   //sphere(sphereRadius);
   //popMatrix();
   if (paused)
-    surface.setTitle(windowTitle + " [PAUSED]");
+    surface.setTitle(windowTitle + " [PAUSED - PRESS 'G' TO RESUME]");
   else
     surface.setTitle(windowTitle + " "+ nf(frameRate,0,2) + "FPS");
 }
@@ -323,14 +326,15 @@ void update(float dt)
 boolean leftPressed, rightPressed, upPressed, downPressed, shiftPressed, change_y;
 void keyPressed()
 {
-  if (key == ' ') paused = !paused;
+  if (key == 'g' || key == 'G') paused = !paused;
   if (key == 'y') change_y = true;
   if (keyCode == LEFT) leftPressed = true;
   if (keyCode == RIGHT) rightPressed = true;
   if (keyCode == UP) upPressed = true; 
   if (keyCode == DOWN) downPressed = true;
   if (keyCode == SHIFT) shiftPressed = true;
-  //camera.HandleKeyPressed();
+  
+  camera.HandleKeyPressed();
 }
 
 void keyReleased()
@@ -341,7 +345,8 @@ void keyReleased()
   if (keyCode == UP) upPressed = false; 
   if (keyCode == DOWN) downPressed = false;
   if (keyCode == SHIFT) shiftPressed = false;
-  //camera.HandleKeyPressed();
+  
+  camera.HandleKeyReleased();
 }
 
 void mousePressed(){

@@ -9,7 +9,7 @@
   Code taken from the example code in course's Canvas site. We don't take any authorship
   in this code.
   
-  - Jon-Michael Hoang
+  - Jeffrey Jia & Jon-Michael Hoang 
 
 */
 
@@ -17,11 +17,11 @@ class Camera
 {
   Camera()
   {
-    position      = new PVector( 0, 0, 25 ); // initial position
+    position      = new PVector(512, 360, 1000); // initial position
     theta         = 0; // rotation around Y axis. Starts with forward direction as ( 0, 0, -1 )
     phi           = 0; // rotation around X axis. Starts with up direction as ( 0, 1, 0 )
-    moveSpeed     = 40;
-    turnSpeed     = 1.57; // radians/sec
+    moveSpeed     = 12.5;
+    turnSpeed     = .01; // radians/sec
     boostSpeed    = 5;  // extra speed boost for when you press shift
     
     // dont need to change these
@@ -68,22 +68,23 @@ class Camera
   {
     if ( key == 'w' || key == 'W' ) positiveMovement.z = 1;
     if ( key == 's' || key == 'S' ) negativeMovement.z = -1;
-    if ( key == 'a' || key == 'A' ) negativeMovement.x = -1;
     if ( key == 'd' || key == 'D' ) positiveMovement.x = 1;
-    if ( key == 'q' || key == 'Q' ) positiveMovement.y = 1;
-    if ( key == 'e' || key == 'E' ) negativeMovement.y = -1;
+    if ( key == 'a' || key == 'A' ) negativeMovement.x = -1;
+    if ( key == 'c' || key == 'C' ) positiveMovement.y = 1;
+    if ( key == ' ' || key == ' ' ) negativeMovement.y = -1;
     
-    if ( key == 'r' || key == 'R' ){
+    if ( key == 'r' || key == 'R' )
+    {
       Camera defaults = new Camera();
       position = defaults.position;
       theta = defaults.theta;
       phi = defaults.phi;
     }
     
-    if ( keyCode == LEFT )  negativeTurn.x = 1;
-    if ( keyCode == RIGHT ) positiveTurn.x = -0.5;
-    if ( keyCode == UP )    positiveTurn.y = 0.5;
-    if ( keyCode == DOWN )  negativeTurn.y = -1;
+    if ( key == 'q' || key == 'Q' )  negativeTurn.x = 1;
+    if ( key == 'e' || key == 'E' ) positiveTurn.x = -0.5;
+    //if ( keyCode == UP )    positiveTurn.y = 0.5;
+    //if ( keyCode == DOWN )  negativeTurn.y = -1;
     
     if ( keyCode == SHIFT ) shiftPressed = true; 
     if (shiftPressed){
@@ -97,16 +98,16 @@ class Camera
   void HandleKeyReleased()
   {
     if ( key == 'w' || key == 'W' ) positiveMovement.z = 0;
-    if ( key == 'q' || key == 'Q' ) positiveMovement.y = 0;
-    if ( key == 'd' || key == 'D' ) positiveMovement.x = 0;
-    if ( key == 'a' || key == 'A' ) negativeMovement.x = 0;
     if ( key == 's' || key == 'S' ) negativeMovement.z = 0;
-    if ( key == 'e' || key == 'E' ) negativeMovement.y = 0;
+    if ( key == 'd' || key == 'D' ) positiveMovement.x = 0;
+    if ( key == 'a' || key == 'A' ) negativeMovement.x = 0;  
+    if ( key == 'c' || key == 'C' ) positiveMovement.y = 0;
+    if ( key == ' ' || key == ' ' ) negativeMovement.y = 0;
     
-    if ( keyCode == LEFT  ) negativeTurn.x = 0;
-    if ( keyCode == RIGHT ) positiveTurn.x = 0;
-    if ( keyCode == UP    ) positiveTurn.y = 0;
-    if ( keyCode == DOWN  ) negativeTurn.y = 0;
+    if ( key == 'q' || key == 'Q' ) negativeTurn.x = 0;
+    if ( key == 'e' || key == 'E' ) positiveTurn.x = 0;
+    //if ( keyCode == UP    ) positiveTurn.y = 0;
+    //if ( keyCode == DOWN  ) negativeTurn.y = 0;
     
     if ( keyCode == SHIFT ){
       shiftPressed = false;
