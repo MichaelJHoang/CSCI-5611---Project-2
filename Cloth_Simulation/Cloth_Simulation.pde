@@ -15,18 +15,21 @@ float radius = 5;
 // starting position
 Vec3 stringTop = new Vec3(200, 50, 0);
 //Vec3 restLength = new Vec3(0, 40, 0);
-float restLength = 10;
+float restLength = 20;
+float horizontalRestLenght = 30;
 
 float mass = 0.3;
 
 // tuning parameters
-float k = 40;
-float kv = 15;
+float k = 160;
+float kv = 1;
+float hor_k = 160;
+float hor_kv = 1;
 
 float frictionConstant = -0.8;
 
-int clothLength = 15;
-int clothHeight = 15;
+int clothLength = 20;
+int clothHeight = 20;
 int numVertices = clothLength * clothHeight;
 // row(column)
 //ArrayList<ArrayList<Vec3>> clothVertexPositions = new ArrayList<ArrayList<Vec3>>();
@@ -133,23 +136,6 @@ void draw()
     surface.setTitle(windowTitle + " [PAUSED]");
   else
     surface.setTitle(windowTitle + " "+ nf(frameRate,0,2) + "FPS");
-  //pushMatrix();
-  //line(200, stringTop.y, 200, clothVertices.get(0).position.y);
-  //translate(200, clothVertices.get(0).position.y);
-  //sphere(radius);
-  //popMatrix();
-  
-  //pushMatrix();
-  //line(200,clothVertices.get(0).position.y, 200, clothVertices.get(1).position.y);
-  //translate(200, clothVertices.get(1).position.y);
-  //sphere(radius);
-  //popMatrix();
-  
-  //pushMatrix();
-  //line(200,clothVertices.get(1).position.y, 200, clothVertices.get(2).position.y);
-  //translate(200, clothVertices.get(2).position.y);
-  //sphere(radius);
-  //popMatrix();
 }
 
 
@@ -159,14 +145,13 @@ void draw()
 */
 void update(float dt)
 { 
+  //Reset accelerations each timestep (momenum only applies to velocity)
+  for (int i = 0; i < clothVertices.size(); i++){
+    clothVertices.get(i).acceleration = new Vec3(0,0,0);
+    clothVertices.get(i).acceleration.add(gravity);
+  }
+  //vertical interaction top moves with bottom
   for (int stringColumn = 0; stringColumn < clothLength; stringColumn++){
-    //Reset accelerations each timestep (momenum only applies to velocity)
-    for (int i = clothHeight*stringColumn; i < clothHeight*stringColumn + clothHeight; i++){
-      clothVertices.get(i).acceleration = new Vec3(0,0,0);
-      clothVertices.get(i).acceleration.add(gravity);
-    }
-    
-    //vertical interaction
     //Compute (damped) Hooke's law for each spring
     for (int i = clothHeight*stringColumn; i < clothHeight*stringColumn + clothHeight - 1; i++){
       Vec3 diff = clothVertices.get(i+1).position.minus(clothVertices.get(i).position);
@@ -180,16 +165,67 @@ void update(float dt)
       Vec3 force = stringDir.times(stringF+dampF);
       clothVertices.get(i).acceleration.add(force.times(-1.0/mass));
       clothVertices.get(i+1).acceleration.add(force.times(1.0/mass));
+    }
+  }
+  //vertical interaction bottom moves with top
+  for (int stringColumn = 0; stringColumn < clothLength; stringColumn++){
+    //Compute (damped) Hooke's law for each spring
+    for (int i = clothHeight*stringColumn + clothHeight-1; i > clothHeight*stringColumn; i--){
+      Vec3 diff = clothVertices.get(i-1).position.minus(clothVertices.get(i).position);
+      float stringF = -k*(diff.length() - restLength);
       
+      Vec3 stringDir = diff.normalized();
+      float projVbot = dot(clothVertices.get(i).velocity, stringDir);
+      float projVtop = dot(clothVertices.get(i-1).velocity, stringDir);
+      float dampF = -kv*(projVtop - projVbot);
+      
+      Vec3 force = stringDir.times(stringF+dampF);
+      clothVertices.get(i).acceleration.add(force.times(-1.0/mass));
+      clothVertices.get(i-1).acceleration.add(force.times(1.0/mass));
     }
+  }
     
-    //Simplified friction (Coulomb model)
-    for (int i = clothHeight*stringColumn; i < clothHeight*stringColumn + clothHeight; i++){
-      Vec3 fauxfriction = clothVertices.get(i).velocity.times(frictionConstant);
-      clothVertices.get(i).acceleration.add(fauxfriction);
+  //horizontal interaction left moves with right
+  for (int stringRow = 1; stringRow < clothHeight - 1; stringRow++){
+    //Compute (damped) Hooke's law for each spring
+    for (int i = clothLength*stringRow; i < clothLength*stringRow + clothLength; i++){
+      Vec3 diff = clothVertices.get(i+clothHeight).position.minus(clothVertices.get(i).position);
+      float stringF = -hor_k*(diff.length() - horizontalRestLenght);
+      
+      Vec3 stringDir = diff.normalized();
+      float projVbot = dot(clothVertices.get(i).velocity, stringDir);
+      float projVtop = dot(clothVertices.get(i+clothHeight).velocity, stringDir);
+      float dampF = -hor_kv*(projVtop - projVbot);
+      
+      Vec3 force = stringDir.times(stringF+dampF);
+      clothVertices.get(i).acceleration.add(force.times(-1.0/mass));
+      clothVertices.get(i+clothHeight).acceleration.add(force.times(1.0/mass));
     }
-    
-    //Eulerian integration
+  }
+  //horizontal interaction right moves with left
+  for (int stringRow = clothHeight; stringRow > 1; stringRow--){
+    //Compute (damped) Hooke's law for each spring
+    for (int i = clothLength*stringRow - 1; i > clothLength*stringRow - clothLength; i--){
+      Vec3 diff = clothVertices.get(i-clothHeight).position.minus(clothVertices.get(i).position);
+      float stringF = -hor_k*(diff.length() - horizontalRestLenght);
+      
+      Vec3 stringDir = diff.normalized();
+      float projVbot = dot(clothVertices.get(i).velocity, stringDir);
+      float projVtop = dot(clothVertices.get(i-clothHeight).velocity, stringDir);
+      float dampF = -hor_kv*(projVtop - projVbot);
+      
+      Vec3 force = stringDir.times(stringF+dampF);
+      clothVertices.get(i).acceleration.add(force.times(-1.0/mass));
+      clothVertices.get(i-clothHeight).acceleration.add(force.times(1.0/mass));
+    }
+  }
+  //Simplified friction (Coulomb model)
+  for(int i = 0; i < clothVertices.size(); i++){
+    Vec3 fauxfriction = clothVertices.get(i).velocity.times(frictionConstant);
+    clothVertices.get(i).acceleration.add(fauxfriction);
+  }
+  //Eulerian integration
+  for (int stringColumn = 0; stringColumn < clothLength; stringColumn++){
     for (int i = clothHeight*stringColumn + 1; i < clothHeight*stringColumn + clothHeight; i++){
       clothVertices.get(i).velocity.add(clothVertices.get(i).acceleration.times(dt));
       clothVertices.get(i).position.add(clothVertices.get(i).velocity.times(dt));
