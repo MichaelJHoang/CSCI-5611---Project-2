@@ -109,7 +109,8 @@ void draw()
   popMatrix();
   for (int i = clothHeight*0; i < clothHeight*0 + clothHeight - 1; i++){
     pushMatrix();
-    line(clothVertices.get(i).position.x,clothVertices.get(i).position.y,clothVertices.get(i+1).position.x,clothVertices.get(i+1).position.y);
+    line(clothVertices.get(i).position.x,clothVertices.get(i).position.y,clothVertices.get(i).position.z,
+         clothVertices.get(i+1).position.x,clothVertices.get(i+1).position.y, clothVertices.get(i+1).position.z);
     translate(clothVertices.get(i+1).position.x,clothVertices.get(i+1).position.y);
     //sphere(radius);
     point(0,0,0);
@@ -124,15 +125,15 @@ void draw()
     popMatrix();
     for (int i = clothHeight*stringColumn; i < clothHeight*stringColumn + clothHeight - 1; i++){
       pushMatrix();
-      line(clothVertices.get(i).position.x,clothVertices.get(i).position.y,
-           clothVertices.get(i+1).position.x,clothVertices.get(i+1).position.y);
-      line(clothVertices.get(i).position.x,clothVertices.get(i).position.y,
-           clothVertices.get(i - clothHeight).position.x,clothVertices.get(i - clothHeight).position.y);
-      line(clothVertices.get(i).position.x,clothVertices.get(i).position.y,
-           clothVertices.get(i+1 - clothHeight).position.x,clothVertices.get(i+1 - clothHeight).position.y);
+      line(clothVertices.get(i).position.x,clothVertices.get(i).position.y, clothVertices.get(i).position.z,
+           clothVertices.get(i+1).position.x,clothVertices.get(i+1).position.y, clothVertices.get(i+1).position.z);
+      line(clothVertices.get(i).position.x,clothVertices.get(i).position.y,clothVertices.get(i).position.z,
+           clothVertices.get(i - clothHeight).position.x,clothVertices.get(i - clothHeight).position.y,clothVertices.get(i - clothHeight).position.z);
+      line(clothVertices.get(i).position.x,clothVertices.get(i).position.y,clothVertices.get(i).position.z,
+           clothVertices.get(i+1 - clothHeight).position.x,clothVertices.get(i+1 - clothHeight).position.y, clothVertices.get(i+1 - clothHeight).position.z);
       if(i != clothHeight*stringColumn){
-        line(clothVertices.get(i).position.x,clothVertices.get(i).position.y,
-           clothVertices.get(i-1 - clothHeight).position.x,clothVertices.get(i-1 - clothHeight).position.y);
+        line(clothVertices.get(i).position.x,clothVertices.get(i).position.y,clothVertices.get(i).position.z,
+           clothVertices.get(i-1 - clothHeight).position.x,clothVertices.get(i-1 - clothHeight).position.y,clothVertices.get(i-1 - clothHeight).position.z);
       }
       translate(clothVertices.get(i+1).position.x,clothVertices.get(i+1).position.y);
       //sphere(radius);
@@ -140,10 +141,10 @@ void draw()
       popMatrix();
     }
     pushMatrix();
-    line(clothVertices.get(clothHeight*stringColumn + clothHeight - 1).position.x,clothVertices.get(clothHeight*stringColumn + clothHeight - 1).position.y,
-         clothVertices.get(clothHeight*stringColumn - 1).position.x,clothVertices.get(clothHeight*stringColumn - 1).position.y);
-    line(clothVertices.get(clothHeight*stringColumn + clothHeight - 1).position.x,clothVertices.get(clothHeight*stringColumn + clothHeight - 1).position.y,
-         clothVertices.get(clothHeight*stringColumn - 2).position.x,clothVertices.get(clothHeight*stringColumn - 2).position.y);
+    line(clothVertices.get(clothHeight*stringColumn + clothHeight - 1).position.x,clothVertices.get(clothHeight*stringColumn + clothHeight - 1).position.y, clothVertices.get(clothHeight*stringColumn + clothHeight - 1).position.z,
+         clothVertices.get(clothHeight*stringColumn - 1).position.x,clothVertices.get(clothHeight*stringColumn - 1).position.y, clothVertices.get(clothHeight*stringColumn - 1).position.z);
+    line(clothVertices.get(clothHeight*stringColumn + clothHeight - 1).position.x,clothVertices.get(clothHeight*stringColumn + clothHeight - 1).position.y, clothVertices.get(clothHeight*stringColumn + clothHeight - 1).position.z,
+         clothVertices.get(clothHeight*stringColumn - 2).position.x,clothVertices.get(clothHeight*stringColumn - 2).position.y, clothVertices.get(clothHeight*stringColumn - 2).position.z);
     popMatrix();
     
   }
