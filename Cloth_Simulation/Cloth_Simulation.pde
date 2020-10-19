@@ -22,9 +22,9 @@ float mass = 0.3;
 
 // tuning parameters
 float k = 160;
-float kv = 1;
+float kv = 2;
 float hor_k = 160;
-float hor_kv = 1;
+float hor_kv = 2;
 
 float frictionConstant = -0.8;
 
@@ -55,7 +55,9 @@ void setup()
     {
       Vec3 tempPosition = new Vec3(stringTop.x + i * 30 + j * 10, stringTop.y + j * 50, 0);
       Vec3 tempVelocity = new Vec3(0, 0, 0);
-      Vertex tempVertex = new Vertex(tempPosition, tempVelocity, new Vec3(), new Vec3(), new Vec3(), new Vec3());
+      //Vertex tempVertex = new Vertex(tempPosition, tempVelocity, new Vec3(), new Vec3(), new Vec3(), new Vec3());
+      Vec3 force = new Vec3(0, 0, 0);
+      Vertex tempVertex = new Vertex(tempPosition, tempVelocity, new Vec3(), new Vec3(), new Vec3(), force);
       clothVertices.add(tempVertex);
     }
 }
@@ -148,6 +150,7 @@ void update(float dt)
   //Reset accelerations each timestep (momenum only applies to velocity)
   for (int i = 0; i < clothVertices.size(); i++){
     clothVertices.get(i).acceleration = new Vec3(0,0,0);
+    clothVertices.get(i).force = new Vec3(0,0,0);
     clothVertices.get(i).acceleration.add(gravity);
   }
   //vertical interaction top moves with bottom
@@ -163,8 +166,10 @@ void update(float dt)
       float dampF = -kv*(projVtop - projVbot);
       
       Vec3 force = stringDir.times(stringF+dampF);
-      clothVertices.get(i).acceleration.add(force.times(-1.0/mass));
-      clothVertices.get(i+1).acceleration.add(force.times(1.0/mass));
+      //clothVertices.get(i).acceleration.add(force.times(-1.0/mass));
+      //clothVertices.get(i+1).acceleration.add(force.times(1.0/mass));
+      clothVertices.get(i).force = clothVertices.get(i).force.plus(force.times(-1.0/mass));
+      clothVertices.get(i+1).force = clothVertices.get(i+1).force.plus(force.times(1.0/mass));
     }
   }
   //vertical interaction bottom moves with top
@@ -180,8 +185,10 @@ void update(float dt)
       float dampF = -kv*(projVtop - projVbot);
       
       Vec3 force = stringDir.times(stringF+dampF);
-      clothVertices.get(i).acceleration.add(force.times(-1.0/mass));
-      clothVertices.get(i-1).acceleration.add(force.times(1.0/mass));
+      //clothVertices.get(i).acceleration.add(force.times(-1.0/mass));
+      //clothVertices.get(i-1).acceleration.add(force.times(1.0/mass));
+      clothVertices.get(i).force = clothVertices.get(i).force.plus(force.times(-1.0/mass));
+      clothVertices.get(i-1).force = clothVertices.get(i-1).force.plus(force.times(1.0/mass));
     }
   }
     
@@ -198,8 +205,10 @@ void update(float dt)
       float dampF = -hor_kv*(projVtop - projVbot);
       
       Vec3 force = stringDir.times(stringF+dampF);
-      clothVertices.get(i).acceleration.add(force.times(-1.0/mass));
-      clothVertices.get(i+clothHeight).acceleration.add(force.times(1.0/mass));
+      //clothVertices.get(i).acceleration.add(force.times(-1.0/mass));
+      //clothVertices.get(i+clothHeight).acceleration.add(force.times(1.0/mass));
+      clothVertices.get(i).force = clothVertices.get(i).force.plus(force.times(-1.0/mass));
+      clothVertices.get(i+clothHeight).force = clothVertices.get(i+clothHeight).force.plus(force.times(1.0/mass));
     }
   }
   //horizontal interaction right moves with left
@@ -215,10 +224,16 @@ void update(float dt)
       float dampF = -hor_kv*(projVtop - projVbot);
       
       Vec3 force = stringDir.times(stringF+dampF);
-      clothVertices.get(i).acceleration.add(force.times(-1.0/mass));
-      clothVertices.get(i-clothHeight).acceleration.add(force.times(1.0/mass));
+      //clothVertices.get(i).acceleration.add(force.times(-1.0/mass));
+      //clothVertices.get(i-clothHeight).acceleration.add(force.times(1.0/mass));
+      clothVertices.get(i).force = clothVertices.get(i).force.plus(force.times(-1.0/mass));
+      clothVertices.get(i-clothHeight).force = clothVertices.get(i-clothHeight).force.plus(force.times(1.0/mass));
     }
   }
+  for(int i = 0; i < clothVertices.size(); i++){
+    clothVertices.get(i).acceleration.add(clothVertices.get(i).force);
+  }
+  
   //Simplified friction (Coulomb model)
   for(int i = 0; i < clothVertices.size(); i++){
     Vec3 fauxfriction = clothVertices.get(i).velocity.times(frictionConstant);
@@ -231,36 +246,6 @@ void update(float dt)
       clothVertices.get(i).position.add(clothVertices.get(i).velocity.times(dt));
     }
   }
- 
- 
- 
- 
-  //// first, second, and third
-  //clothVertices.get(0).stringForce = (( clothVertices.get(0).position.minus(stringTop).minus(restLength))).times(-k);
-  //clothVertices.get(0).dampForce = clothVertices.get(0).velocity.times(-kv);
-  //clothVertices.get(0).force = clothVertices.get(0).stringForce.plus(clothVertices.get(0).dampForce);
-  
-  //for (int x = 1; x < clothVertices.size(); x++)
-  //{
-  //  clothVertices.get(x).stringForce = (( clothVertices.get(x).position.minus(clothVertices.get(x - 1).position).minus(restLength))).times(-k);
-  //  clothVertices.get(x).dampForce = clothVertices.get(x).velocity.minus(clothVertices.get(x - 1).velocity).times(-kv);
-  //  clothVertices.get(x).force = clothVertices.get(x).stringForce.plus(clothVertices.get(x).dampForce);
-  //}
-  
-  //for (int x = clothVertices.size() - 1; x >= 0; x--)
-  //{
-  //  Vec3 combinedForce = clothVertices.get(x).force;
-    
-  //  for (int y = x; y < clothVertices.size(); y++)
-  //  {
-  //    combinedForce = combinedForce.minus(clothVertices.get(y).force);
-  //    print(combinedForce);
-  //  }
-    
-  //  clothVertices.get(x).acceleration = gravity.plus(combinedForce.times(1/mass));
-  //  clothVertices.get(x).velocity = clothVertices.get(x).velocity.plus(clothVertices.get(x).acceleration.times(dt));
-  //  clothVertices.get(x).position = clothVertices.get(x).position.plus(clothVertices.get(x).velocity.times(dt));
-  //}
 }
 
 
@@ -293,6 +278,8 @@ void mousePressed(){
 void mouseDragged(){
   if (selected > 0){
     clothVertices.get(selected).position = new Vec3(mouseX, mouseY,0);
+    clothVertices.get(selected).velocity = new Vec3(0,0,0);
+    clothVertices.get(selected).acceleration = new Vec3(0, 0,0);
   }
 }
 
