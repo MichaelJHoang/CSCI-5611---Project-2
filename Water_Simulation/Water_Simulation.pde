@@ -18,12 +18,14 @@ float dhudt_mid[] = new float[n]; // momentum (midpoint)
 float h_mid[] = new float[n];
 float hu_mid[] = new float[n];
 
-float dhudx, dhudx_mid;
-float dhu2dx, dhu2dx_mid;
-float dgh2dx, dgh2dx_mid;
+float dhudx = 0, dhudx_mid = 0;
+float dhu2dx = 0, dhu2dx_mid = 0;
+float dgh2dx = 0, dgh2dx_mid = 0;
+
+float gravity = 9.81;
+float damp = 0.9;
 
 boolean paused = true;
-float gravity = 9.81;
 
 //Set up screen and initial conditions
 String windowTitle = "1D Shallow Water Simulation";
@@ -69,10 +71,10 @@ void accountWaterColor(float u){
     4. Compute SWE PDEs using updates midpoints
     5. Update h and hu full timestep (Eulerian)
 */
-void update(float dx, float dt)
+void update(float dt)
 {
   // compute midpoint heights and momentums
-  for (int x = 0; x < n - 1; x++)
+  for (int x = 1; x < n - 1; x++)
   {
     // midpoint method
     h_mid[x] = (h[x + 1] + h[x]) / 2;
@@ -95,9 +97,24 @@ void update(float dx, float dt)
     
     // partials
     // compute dh/dt (mid)
-    dhudx = (hu[x + 1] - hu[x]) / dx;
-    dhdt_mid[x] = -dhudx_mid;
+    dhudx = (hu_mid[x] - hu_mid[x - 1]) / dx;
+    dhdt[x] = -dhudx;
+    
+    //compute dhu/dt (mid)
+    dhu2dx = (sq(hu_mid[x]) / h_mid[x] - sq(hu_mid[x - 1]) / h_mid[x - 1]) / dx;
+    dgh2dx = gravity * (sq(h_mid[x]) - sq(h_mid[x - 1])) / dx;
+    dhudt[x] = -(dhu2dx + .5 * dgh2dx);
+    
+    // integrate heights and momentum
+    h[x] += damp* dhdt[x] * dt;
+    hu[x] += damp * dhudt[x] * dt;
   }
+  
+  // handle boundry conditions
+  h[0] = h[n - 2];
+  h[n-1] = h[1];
+  hu[0] = hu[n - 2];
+  hu[n - 1] = hu[1];
 }
 
 
@@ -108,21 +125,22 @@ void draw()
 {
   background(194, 178, 128);
   
-  float dt = 0.0002;
-  float dx = 0.0002;
-  for (int i = 0; i < 20; i++)
+  float dt = 0.01;
+  float simulation_dt = 0.001;
+  for (int i = 0; i < int(dt / simulation_dt); i++)
   {
     if (!paused)
     {
-      update(dx, dt);
+      update(dt);
     }
   }
    
   
-  //1D water (dHeat/dt)
+  //1D water
   for (int i = 0; i < n; i++)
   {
-    accountWaterColor(100);
+    System.out.println(h[i]);
+    accountWaterColor(hu[i]);
     
     pushMatrix();
     
