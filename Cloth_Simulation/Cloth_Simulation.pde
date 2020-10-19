@@ -10,7 +10,7 @@
 Camera camera;
 
 Vec3 gravity = new Vec3 (0, 400, 0);
-float radius = 5;
+float radius = 2;
 
 // starting position
 Vec3 stringTop = new Vec3(200, 50, 0);
@@ -21,9 +21,9 @@ float horizontalRestLenght = 30;
 float mass = 0.3;
 
 // tuning parameters
-float k = 160;
+float k = 320;
 float kv = 2;
-float hor_k = 160;
+float hor_k = 320;
 float hor_kv = 2;
 
 float frictionConstant = -0.8;
@@ -38,6 +38,14 @@ int numVertices = clothLength * clothHeight;
 ArrayList <Vertex> clothVertices = new ArrayList <Vertex> ();
 
 int selected = -1;
+
+//Sphere to interact with cloth
+float sphereRadius = 100;
+Vec3 spherePos = new Vec3(512, 360, 200);
+float sphereSpeed = 100;
+Vec3 sphereVel = new Vec3(0,0,0);
+float COR = 0.7; 
+
 /*
   the int main() of Processing
 */
@@ -85,6 +93,11 @@ void draw()
       update(1/(20*frameRate));
     }
   }
+  fill(180,40,60);
+  pushMatrix();
+  translate(spherePos.x, spherePos.y, spherePos.z);
+  sphere(sphereRadius);
+  popMatrix();
   
   fill(0, 0, 255);
   
@@ -92,14 +105,14 @@ void draw()
   pushMatrix();
   translate(clothVertices.get(clothHeight*0).position.x,clothVertices.get(clothHeight*0).position.y);
   //sphere(radius);
-  point(0,0);
+  point(0,0,0);
   popMatrix();
   for (int i = clothHeight*0; i < clothHeight*0 + clothHeight - 1; i++){
     pushMatrix();
     line(clothVertices.get(i).position.x,clothVertices.get(i).position.y,clothVertices.get(i+1).position.x,clothVertices.get(i+1).position.y);
     translate(clothVertices.get(i+1).position.x,clothVertices.get(i+1).position.y);
     //sphere(radius);
-    point(0,0);
+    point(0,0,0);
     popMatrix();
   }
 
@@ -107,7 +120,7 @@ void draw()
     pushMatrix();
     translate(clothVertices.get(clothHeight*stringColumn).position.x,clothVertices.get(clothHeight*stringColumn).position.y);
     //sphere(radius);
-    point(0,0);
+    point(0,0,0);
     popMatrix();
     for (int i = clothHeight*stringColumn; i < clothHeight*stringColumn + clothHeight - 1; i++){
       pushMatrix();
@@ -123,7 +136,7 @@ void draw()
       }
       translate(clothVertices.get(i+1).position.x,clothVertices.get(i+1).position.y);
       //sphere(radius);
-      point(0,0);
+      point(0,0,0);
       popMatrix();
     }
     pushMatrix();
@@ -134,6 +147,11 @@ void draw()
     popMatrix();
     
   }
+  //fill(180,40,60);
+  //pushMatrix();
+  //translate(spherePos.x, spherePos.y, spherePos.z);
+  //sphere(sphereRadius);
+  //popMatrix();
   if (paused)
     surface.setTitle(windowTitle + " [PAUSED]");
   else
@@ -151,9 +169,33 @@ void update(float dt)
   for (int i = 0; i < clothVertices.size(); i++){
     clothVertices.get(i).acceleration = new Vec3(0,0,0);
     clothVertices.get(i).force = new Vec3(0,0,0);
-    clothVertices.get(i).acceleration.add(gravity);
+    if (i != selected){
+      clothVertices.get(i).acceleration.add(gravity);
+    }
   }
-  //vertical interaction top moves with bottom
+  
+  
+  sphereVel = new Vec3(0,0,0);
+  if (leftPressed) sphereVel.add(new Vec3(-sphereSpeed,0,0));
+  if (rightPressed) sphereVel.add(new Vec3(sphereSpeed,0,0));
+  if (change_y && upPressed) sphereVel.add(new Vec3(0,-sphereSpeed,0)); //inwards
+  if (change_y && downPressed) sphereVel.add(new Vec3(0,sphereSpeed,0)); //outwards
+  if (upPressed && !change_y) sphereVel.add(new Vec3(0,0,-sphereSpeed)); //inwards
+  if (downPressed && !change_y) sphereVel.add(new Vec3(0,0,sphereSpeed)); //outwards
+  sphereVel.clampToLength(sphereSpeed);
+  if (shiftPressed) sphereVel.mul(2);
+  spherePos.add(sphereVel.times(dt));
+  
+  for(int i = 0; i < clothVertices.size(); i++){
+    if (clothVertices.get(i).position.distanceTo(spherePos) < (sphereRadius+radius)){
+        Vec3 normal = (clothVertices.get(i).position.minus(spherePos)).normalized();
+        clothVertices.get(i).position = spherePos.plus(normal.times(sphereRadius+radius).times(1.01));
+        Vec3 velNormal = normal.times(dot(clothVertices.get(i).velocity,normal));
+        clothVertices.get(i).velocity.subtract(velNormal.times(1 + COR));
+      }
+  }
+  
+  //vertical interaction top moves with bottom 
   for (int stringColumn = 0; stringColumn < clothLength; stringColumn++){
     //Compute (damped) Hooke's law for each spring
     for (int i = clothHeight*stringColumn; i < clothHeight*stringColumn + clothHeight - 1; i++){
@@ -230,8 +272,21 @@ void update(float dt)
       clothVertices.get(i-clothHeight).force = clothVertices.get(i-clothHeight).force.plus(force.times(1.0/mass));
     }
   }
+  //sphereVel = new Vec3(0,0,0);
+  //if (leftPressed) sphereVel.add(new Vec3(-sphereSpeed,0,0));
+  //if (rightPressed) sphereVel.add(new Vec3(sphereSpeed,0,0));
+  //if (change_y && upPressed) sphereVel.add(new Vec3(0,-sphereSpeed,0)); //inwards
+  //if (change_y && downPressed) sphereVel.add(new Vec3(0,sphereSpeed,0)); //outwards
+  //if (upPressed && !change_y) sphereVel.add(new Vec3(0,0,-sphereSpeed)); //inwards
+  //if (downPressed && !change_y) sphereVel.add(new Vec3(0,0,sphereSpeed)); //outwards
+  //sphereVel.clampToLength(sphereSpeed);
+  //if (shiftPressed) sphereVel.mul(2);
+  //spherePos.add(sphereVel.times(dt));
+  
   for(int i = 0; i < clothVertices.size(); i++){
-    clothVertices.get(i).acceleration.add(clothVertices.get(i).force);
+    if (i != selected){
+      clothVertices.get(i).acceleration.add(clothVertices.get(i).force);
+    }
   }
   
   //Simplified friction (Coulomb model)
@@ -246,6 +301,17 @@ void update(float dt)
       clothVertices.get(i).position.add(clothVertices.get(i).velocity.times(dt));
     }
   }
+  //for(int i = 0; i < clothVertices.size(); i++){
+  //  if (clothVertices.get(i).position.distanceTo(spherePos) < (sphereRadius+4*radius)){
+  //      Vec3 normal = (clothVertices.get(i).position.minus(spherePos)).normalized();
+  //      clothVertices.get(i).position = spherePos.plus(normal.times(sphereRadius+4*radius).times(1.01));
+  //      //Vec3 velNormal = normal.times(dot(clothVertices.get(i).velocity,normal));
+  //      //vel[i].add(obstacleVel); # possible answer for adding momentum
+  //      //vel[i].add(projAB(obstacleVel,normal)); # professor's solution
+  //      //clothVertices.get(i).velocity.subtract(velNormal.times(1 + COR));
+  //    }
+  //}
+  
 }
 
 
@@ -253,16 +319,27 @@ void update(float dt)
 /*
   callback functions to handle user keyboard inputs
 */
-
+boolean leftPressed, rightPressed, upPressed, downPressed, shiftPressed, change_y;
 void keyPressed()
 {
-  if (key == ' ')
-    paused = !paused;
+  if (key == ' ') paused = !paused;
+  if (key == 'y') change_y = true;
+  if (keyCode == LEFT) leftPressed = true;
+  if (keyCode == RIGHT) rightPressed = true;
+  if (keyCode == UP) upPressed = true; 
+  if (keyCode == DOWN) downPressed = true;
+  if (keyCode == SHIFT) shiftPressed = true;
   //camera.HandleKeyPressed();
 }
 
 void keyReleased()
 {
+  if (key == 'y') change_y = false;
+  if (keyCode == LEFT) leftPressed = false;
+  if (keyCode == RIGHT) rightPressed = false;
+  if (keyCode == UP) upPressed = false; 
+  if (keyCode == DOWN) downPressed = false;
+  if (keyCode == SHIFT) shiftPressed = false;
   //camera.HandleKeyPressed();
 }
 
