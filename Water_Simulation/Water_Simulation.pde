@@ -40,23 +40,12 @@ void setup()
 
 
 //TODO: Change me to a blackbody color ramp
-void colorByTemp(float u){
-  float r = u/1;
-  float g = u/1;
+void colorWater(float u){
+  //float r = u/1;
+  //float g = u/1;
+  
   float b = u/1;
-  fill(255*r,255*g,255*b);
-}
-
-
-
-
-
-//Red for positive values, blue for negative ones.
-void accountWaterColor(float u){
-  if (u < 0)
-    fill(0,0,-255*u);
-  else
-    fill(0,0,255*u);
+  fill(0,0,255*b);
 }
 
 
@@ -140,7 +129,7 @@ void draw()
   for (int i = 0; i < n; i++)
   {
     System.out.println(h[i]);
-    accountWaterColor(hu[i]);
+    colorWater(hu[i]);
     
     pushMatrix();
     
