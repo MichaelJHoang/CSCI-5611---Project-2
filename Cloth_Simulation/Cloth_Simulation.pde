@@ -21,12 +21,12 @@ float mass = 0.3;
 
 // tuning parameters
 float k = 40;
-float kv = 2;
+float kv = 15;
 
 float frictionConstant = -0.8;
 
-int clothLength = 9;
-int clothHeight = 9;
+int clothLength = 15;
+int clothHeight = 15;
 int numVertices = clothLength * clothHeight;
 // row(column)
 //ArrayList<ArrayList<Vec3>> clothVertexPositions = new ArrayList<ArrayList<Vec3>>();
@@ -86,20 +86,23 @@ void draw()
   // First String
   pushMatrix();
   translate(clothVertices.get(clothHeight*0).position.x,clothVertices.get(clothHeight*0).position.y);
-  sphere(radius);
+  //sphere(radius);
+  point(0,0);
   popMatrix();
   for (int i = clothHeight*0; i < clothHeight*0 + clothHeight - 1; i++){
     pushMatrix();
     line(clothVertices.get(i).position.x,clothVertices.get(i).position.y,clothVertices.get(i+1).position.x,clothVertices.get(i+1).position.y);
     translate(clothVertices.get(i+1).position.x,clothVertices.get(i+1).position.y);
-    sphere(radius);
+    //sphere(radius);
+    point(0,0);
     popMatrix();
   }
 
   for (int stringColumn = 1; stringColumn < clothLength; stringColumn++){
     pushMatrix();
     translate(clothVertices.get(clothHeight*stringColumn).position.x,clothVertices.get(clothHeight*stringColumn).position.y);
-    sphere(radius);
+    //sphere(radius);
+    point(0,0);
     popMatrix();
     for (int i = clothHeight*stringColumn; i < clothHeight*stringColumn + clothHeight - 1; i++){
       pushMatrix();
@@ -114,7 +117,8 @@ void draw()
            clothVertices.get(i-1 - clothHeight).position.x,clothVertices.get(i-1 - clothHeight).position.y);
       }
       translate(clothVertices.get(i+1).position.x,clothVertices.get(i+1).position.y);
-      sphere(radius);
+      //sphere(radius);
+      point(0,0);
       popMatrix();
     }
     pushMatrix();
@@ -162,6 +166,7 @@ void update(float dt)
       clothVertices.get(i).acceleration.add(gravity);
     }
     
+    //vertical interaction
     //Compute (damped) Hooke's law for each spring
     for (int i = clothHeight*stringColumn; i < clothHeight*stringColumn + clothHeight - 1; i++){
       Vec3 diff = clothVertices.get(i+1).position.minus(clothVertices.get(i).position);
