@@ -4,19 +4,19 @@
 ## Controls
 
 Camera:
-    - WASD : Move the camera up, down, left, right on the xz-plane
-    - Q/E : Rotate the camera counterclockwise/clockwise about the y-axis
-    - C : Move the camera down along the y-axis
-    - SPACEBAR - Move the camera up along the y-axis
-    - R : Reset camera position
+    - WASD - Move the camera up, down, left, right on the xz-plane<br>
+    - Q/E - Rotate the camera counterclockwise/clockwise about the y-axis<br>
+    - C - Move the camera down along the y-axis<br>
+    - SPACEBAR - Move the camera up along the y-axis<br>
+    - R - Reset camera position
 
 Ball:
-    - Arrow Keys : Move the ball up, down, left, right on the xz-plane
+    - Arrow Keys - Move the ball up, down, left, right on the xz-plane
 
 **NOTE: The camera's cframe is independent of the ball's cframe, vice versa. What this means is that if the camera is moved in some arbitrary fashion and you start to move the ball, the ball would move in respect to the world and not the camera (e.g. left arrow key to move left means the ball will move left in respect to the world, but would probably move "right" in camera view)**
 
 Simulation:
-    - G : Pause/Unpause simulation
+    - G - Pause/Unpause simulation
 
 
 ## Implementation features
