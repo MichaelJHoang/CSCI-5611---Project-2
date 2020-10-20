@@ -33,7 +33,7 @@ Simulation:
     - The cloth, as it falls, falls down slowly due to the air drag implementation based off of the inclass assignment's rope demo.
 
 - 3D Implementation & Rendering (20)
-    - The cloth, ball, and camera exist in 3D space, able to render at 60 FPS. For controls, see above.
+    - The cloth, ball, and camera exist in 3D space, and is able to render at 60 FPS. There are also directional and point lights shot onto the scene to provide the ball with a more 3D look. For ball and camera controls, see above.
 
 - User Interaction (10)
     - Moving the ball with the arrow keys allows you to move the cloth as you go through it.
@@ -63,7 +63,15 @@ We also tried to add shaders to the cloth, however, for some reason shaders just
 
 ## Video
 
-[Video Link](https://youtube.com/)
+[Video Link](https://youtu.be/w036hNs8SpU)
+
+Timestamps: <br>
+- 0:08 - Starting the simulation<br>
+- 0:08 - 0:30 - Camera movement<br>
+- 0:33 - 1:00 - Cloth and ball movement through user input (left click and arrow keys, respectively)<br>
+- 1:00 - 2:13 - Ball and cloth interaction. Showing as to how air drag affects the cloth as it falls down and how realistic it is to cloth you see in real life.
+- 2:28 - 2:55 - User interaction with the cloth with mouse input. Also shows as to how realistic the cloth simulation is like.
 
 ## Art contest submission
+***There is no art submission link***
 [Art Submission Link](https://imgur.com/)
