@@ -82,7 +82,7 @@ class Camera
     }
     
     if ( key == 'q' || key == 'Q' )  negativeTurn.x = 1;
-    if ( key == 'e' || key == 'E' ) positiveTurn.x = -0.5;
+    if ( key == 'e' || key == 'E' ) positiveTurn.x = -1;
     //if ( keyCode == UP )    positiveTurn.y = 0.5;
     //if ( keyCode == DOWN )  negativeTurn.y = -1;
     

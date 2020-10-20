@@ -60,7 +60,7 @@ void colorWater(float u){
 /*
   Each frame:
     1. Compute the midpoints of h and hu
-    2. Computer SWE PDEs using midpoints
+    2. Compute SWE PDEs using midpoints
     3. Update midpoints 1/2 timestep (Eulerian)
     4. Compute SWE PDEs using updates midpoints
     5. Update h and hu full timestep (Eulerian)

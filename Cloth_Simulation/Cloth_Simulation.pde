@@ -87,8 +87,18 @@ void setup()
 boolean paused = true;
 void draw()
 {
+  beginShape(QUADS);
+  normal(0, 0, 1);
+  fill(50, 50, 200);
+  vertex(-100, +100);
+  vertex(+100, +100);
+  fill(200, 50, 50);
+  vertex(+100, -100);
+  vertex(-100, -100);
+  endShape();
+  
   background(255, 255, 255);
-  camera.Update(1.0 / 20 * frameRate);
+  camera.Update(1.0 / 25 * frameRate);
   
   //update(.1);
   if (!paused) {
@@ -96,27 +106,28 @@ void draw()
       update(1/(20*frameRate));
     }
   }
-  fill(180,40,60);
+  
+  
   pushMatrix();
+  fill(180,40,60);
   translate(spherePos.x, spherePos.y, spherePos.z);
   sphere(sphereRadius);
   popMatrix();
-  
-  fill(0, 0, 255);
   
   // First String
   pushMatrix();
   translate(clothVertices.get(clothHeight*0).position.x,clothVertices.get(clothHeight*0).position.y);
   //sphere(radius);
-  point(0,0,0);
+  vertex(0,0,0);
   popMatrix();
+  
   for (int i = clothHeight*0; i < clothHeight*0 + clothHeight - 1; i++){
     pushMatrix();
     line(clothVertices.get(i).position.x,clothVertices.get(i).position.y,clothVertices.get(i).position.z,
          clothVertices.get(i+1).position.x,clothVertices.get(i+1).position.y, clothVertices.get(i+1).position.z);
     translate(clothVertices.get(i+1).position.x,clothVertices.get(i+1).position.y);
     //sphere(radius);
-    point(0,0,0);
+    vertex(0,0,0);
     popMatrix();
   }
 
@@ -124,7 +135,7 @@ void draw()
     pushMatrix();
     translate(clothVertices.get(clothHeight*stringColumn).position.x,clothVertices.get(clothHeight*stringColumn).position.y);
     //sphere(radius);
-    point(0,0,0);
+    vertex(0,0,0);
     popMatrix();
     for (int i = clothHeight*stringColumn; i < clothHeight*stringColumn + clothHeight - 1; i++){
       pushMatrix();
@@ -140,7 +151,7 @@ void draw()
       }
       translate(clothVertices.get(i+1).position.x,clothVertices.get(i+1).position.y);
       //sphere(radius);
-      point(0,0,0);
+      vertex(0,0,0);
       popMatrix();
     }
     pushMatrix();
