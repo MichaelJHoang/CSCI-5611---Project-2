@@ -3,11 +3,12 @@
 
 ## Controls
 
-Camera:
-    - WASD - Move the camera up, down, left, right on the xz-plane
-    - Q/E - Rotate the camera counterclockwise/clockwise about the y-axis
-    - C - Move the camera down along the y-axis
-    - SPACEBAR - Move the camera up along the y-axis
+Camera:<br>
+    - WASD - Move the camera up, down, left, right on the xz-plane<br>
+    - Q/E - Rotate the camera counterclockwise/clockwise about the y-axis<br>
+    - C - Move the camera down along the y-axis<br>
+    - SPACEBAR - Move the camera up along the y-axis<br>
+    - R - Reset camera position
 
 Ball:
     - Arrow Keys - Move the ball up, down, left, right on the xz-plane
