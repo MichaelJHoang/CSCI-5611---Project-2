@@ -11,8 +11,8 @@ Camera:<br>
     - R - Reset camera position
 
 Ball:
-    - Arrow Keys - Move the ball up, down, left, right on the xz-plane
-    - Y + Up Arrow - Move the ball up along y axis
+    - Arrow Keys - Move the ball up, down, left, right on the xz-plane<br>
+    - Y + Up Arrow - Move the ball up along y axis<br>
     - Y + Down Arrow - Move the ball down along y axis
 
 **NOTE: The camera's cframe is independent of the ball's cframe, vice versa. What this means is that if the camera is moved in some arbitrary fashion and you start to move the ball, the ball would move in respect to the world and not the camera (e.g. left arrow key to move left means the ball will move left in respect to the world, but would probably move "right" in camera view)**
