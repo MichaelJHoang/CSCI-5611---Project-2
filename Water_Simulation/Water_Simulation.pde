@@ -33,6 +33,9 @@ String windowTitle = "1D Shallow Water Simulation";
 void setup()
 {
   size(600, 300);
+  for (int i = 0; i < n; i++){ //TODO: Try different initial conditions
+    h[i] = i/(float) n;
+  }
 }
 
 
@@ -44,8 +47,10 @@ void colorWater(float u){
   //float r = u/1;
   //float g = u/1;
   
-  float b = u/1;
-  fill(0,0,255*b);
+  //float b = u/1;
+  u = u/1;
+  float du = u/1;
+  fill(lerpColor(color(229,248,255), color(0,168,255), du));
 }
 
 
@@ -100,10 +105,14 @@ void update(float dt)
   }
   
   // handle boundry conditions
-  h[0] = h[n - 2];
-  h[n-1] = h[1];
-  hu[0] = hu[n - 2];
-  hu[n - 1] = hu[1];
+  //h[0] = h[n - 2];
+  //h[n-1] = h[1];
+  //hu[0] = hu[n - 2];
+  //hu[n - 1] = hu[1];
+  h[0] = h[1];
+  h[n-1] = h[n-2];
+  hu[0] = hu[1];
+  hu[n - 1] = hu[n-2];
 }
 
 
@@ -124,12 +133,14 @@ void draw()
     }
   }
    
-  
+  fill(0);
+  noStroke();
   //1D water
   for (int i = 0; i < n; i++)
   {
     System.out.println(h[i]);
-    colorWater(hu[i]);
+    //colorWater(hu[i]);
+    colorWater(h[i]);
     
     pushMatrix();
     

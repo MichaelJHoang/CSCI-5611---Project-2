@@ -276,16 +276,6 @@ void update(float dt)
       clothVertices.get(i-clothHeight).force = clothVertices.get(i-clothHeight).force.plus(force.times(1.0/mass));
     }
   }
-  //sphereVel = new Vec3(0,0,0);
-  //if (leftPressed) sphereVel.add(new Vec3(-sphereSpeed,0,0));
-  //if (rightPressed) sphereVel.add(new Vec3(sphereSpeed,0,0));
-  //if (change_y && upPressed) sphereVel.add(new Vec3(0,-sphereSpeed,0)); //inwards
-  //if (change_y && downPressed) sphereVel.add(new Vec3(0,sphereSpeed,0)); //outwards
-  //if (upPressed && !change_y) sphereVel.add(new Vec3(0,0,-sphereSpeed)); //inwards
-  //if (downPressed && !change_y) sphereVel.add(new Vec3(0,0,sphereSpeed)); //outwards
-  //sphereVel.clampToLength(sphereSpeed);
-  //if (shiftPressed) sphereVel.mul(2);
-  //spherePos.add(sphereVel.times(dt));
   
   for(int i = 0; i < clothVertices.size(); i++){
     if (i != selected){
@@ -305,16 +295,6 @@ void update(float dt)
       clothVertices.get(i).position.add(clothVertices.get(i).velocity.times(dt));
     }
   }
-  //for(int i = 0; i < clothVertices.size(); i++){
-  //  if (clothVertices.get(i).position.distanceTo(spherePos) < (sphereRadius+4*radius)){
-  //      Vec3 normal = (clothVertices.get(i).position.minus(spherePos)).normalized();
-  //      clothVertices.get(i).position = spherePos.plus(normal.times(sphereRadius+4*radius).times(1.01));
-  //      //Vec3 velNormal = normal.times(dot(clothVertices.get(i).velocity,normal));
-  //      //vel[i].add(obstacleVel); # possible answer for adding momentum
-  //      //vel[i].add(projAB(obstacleVel,normal)); # professor's solution
-  //      //clothVertices.get(i).velocity.subtract(velNormal.times(1 + COR));
-  //    }
-  //}
   
 }
 
