@@ -3,7 +3,7 @@
 
 ## Controls
 
-Camera:
+Camera:<br>
     - WASD - Move the camera up, down, left, right on the xz-plane<br>
     - Q/E - Rotate the camera counterclockwise/clockwise about the y-axis<br>
     - C - Move the camera down along the y-axis<br>
