@@ -100,9 +100,8 @@ void draw()
   endShape();
   
   background(255, 255, 255);
-<<<<<<< HEAD
   camera.Update(1.0 / 25 * frameRate);
-=======
+
   
   //lights();
   directionalLight(200, 200, 200,1,0,0);
@@ -112,8 +111,7 @@ void draw()
   directionalLight(128, 128, 128,1,0,-1);
   directionalLight(128, 128, 128,0,1,-1);
   pointLight(128, 128, 128,0,0,0);
-  camera.Update(1.0 / 20 * frameRate);
->>>>>>> d22823d168a97520f4626d536b6148cdcd82d3e5
+
   
   //update(.1);
   if (!paused) {
@@ -121,25 +119,19 @@ void draw()
       update(1/(20*frameRate));
     }
   }
-<<<<<<< HEAD
   
   
-=======
   fill(180,40,60);
   noStroke();
->>>>>>> d22823d168a97520f4626d536b6148cdcd82d3e5
   pushMatrix();
   fill(180,40,60);
   translate(spherePos.x, spherePos.y, spherePos.z);
   sphere(sphereRadius);
   popMatrix();
   
-<<<<<<< HEAD
-=======
   stroke(0,0,0);
   fill(0, 0, 255);
   
->>>>>>> d22823d168a97520f4626d536b6148cdcd82d3e5
   // First String
   pushMatrix();
   translate(clothVertices.get(clothHeight*0).position.x,clothVertices.get(clothHeight*0).position.y);

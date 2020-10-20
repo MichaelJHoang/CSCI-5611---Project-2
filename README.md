@@ -23,6 +23,8 @@ Simulation:
 
 ## Implementation features
 
+**A quick note: Our cloth is based on a mixture of polyester-like and feathersilk-like materials, which results in a cloth that is somewhat airy**
+
 - Cloth Simulation (50 + 20)
     - The cloth mesh is comprised of an NxM array of vertices connected to form and act as cloth. Initially they were all multiple ropes, but were connected horizontally to fulfill cloth simulation standards.
     - The cloth can interact with the ball. When the ball partially moves through the cloth, the cloth will fall and rest on the ball.
@@ -41,18 +43,23 @@ Simulation:
     - We referenced tissue paper for its speeds, in addition to having a gravitational constant of 9.81 m/s^2
 
 - Ripping/Tearing (10)
-    - NOT IMPLEMENTED YET
+    - NOT IMPLEMENTED
 
 - Continuum Water Simulation (20)
-    - We simulated water in 1D. The simulation is independent of the cloth simulation and can be found under the Water_Simulation Directory
+    - ~~We simulated water in 1D. The simulation is independent of the cloth simulation and can be found under the Water_Simulation Directory~~
 
 ## Tools Used
+
 - Processing
+- Java programming language
 
 
 ## Difficulties encountered
 
+The cloth simulation was pretty straightforward, but when it came to the water simulation, we
+were super stumped because of some array indices kept getting NaN values and we [still] don't know what is causing it.
 
+We also tried to add shaders to the cloth, however, for some reason shaders just straight up doesn't work in the environment, be it attached to the cloth or on some random cube created in the world.
 
 ## Video
 
